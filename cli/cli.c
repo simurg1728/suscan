@@ -27,6 +27,7 @@
 
 #include <cli/cli.h>
 #include <cli/cmds.h>
+#include <inttypes.h>
 
 PTR_LIST_PRIVATE(struct suscli_command, command);
 suscan_source_config_t *ui_config;

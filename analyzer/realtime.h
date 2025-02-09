@@ -22,6 +22,9 @@
 
 #include "sigutils/types.h"
 
+#ifdef __MINGW32__
+#include <pthread_time.h>
+#endif
 #include <time.h>
 
 #define SUSCAN_REALTIME_NS 1e-9

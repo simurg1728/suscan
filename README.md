@@ -52,3 +52,19 @@ If everything went fine, you should see the message:
 ```
 suscan.status: suscan library loaded successfully.
 ```
+
+## QMake
+
+Qt 5.14.2 is used.
+
+* Open suscan.pro
+* Shadow build MUST be set 'build'
+* Build all
+
+Binaries are ALWAYS created in "build" folder. No matter what the shadow directory is set (Check the suscan.pro).
+
+### Linking
+
+* Library can be linked by adding following line into the *.pro or *.pri file:
+	include(suscan.pri)
+* The project can also be added in a Qt SUBDIR template.

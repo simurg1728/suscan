@@ -27,7 +27,12 @@
 #  define _POSIX_SOURCE
 #endif /* _POSIX_SOURCE */
 
+#ifdef USE_REGEX_PCRE2
+#define PCRE2_CODE_UNIT_WIDTH 8 // Must be predefined before the header
+// #include <pcre2.h>
+#else
 #include <regex.h>
+#endif
 
 SUPRIVATE hashlist_t *g_user_hash;
 PTR_LIST_PRIVATE(struct suscli_user_entry, g_user);
@@ -141,6 +146,46 @@ suscli_devserv_permission_match(const char *expr)
   uint64_t mask = 0;
   unsigned int i, count;
   SUBOOL compiled = SU_FALSE;
+
+#ifdef USE_REGEX_PCRE2
+#if 0
+    // TODO: Write unit tests for ChatGPT generated code block.
+    int errcode;
+    PCRE2_SIZE erroffset;
+    pcre2_code *re;
+    pcre2_match_data *match_data;
+
+    // Compile the regex pattern
+    re = pcre2_compile((PCRE2_SPTR)expr, PCRE2_ZERO_TERMINATED, 0, &errcode, &erroffset, NULL);
+    if (!re) {
+        fprintf(stderr, "Regex compilation failed at offset %zu\n", erroffset);
+        return 0;
+    }
+
+    // Create match data block
+    match_data = pcre2_match_data_create_from_pattern(re, NULL);
+    if (!match_data) {
+        fprintf(stderr, "Failed to allocate match data\n");
+        pcre2_code_free(re);
+        return 0;
+    }
+
+    count = sizeof(g_perm_strings) / sizeof(g_perm_strings[0]);
+
+    for (i = 0; i < count; ++i) {
+        int rc = pcre2_match(re, (PCRE2_SPTR)g_perm_strings[i], strlen(g_perm_strings[i]), 0, 0, match_data, NULL);
+        if (rc >= 0) {
+            mask |= 1ULL << i;
+        }
+    }
+
+    // Cleanup
+    pcre2_match_data_free(match_data);
+    pcre2_code_free(re);
+#endif
+
+#else
+
   regex_t preg;
 
   SU_TRYZ(regcomp(&preg, expr, REG_EXTENDED));
@@ -155,6 +200,7 @@ suscli_devserv_permission_match(const char *expr)
 done:
   if (compiled)
     regfree(&preg);
+#endif
 
   return mask;
 }
