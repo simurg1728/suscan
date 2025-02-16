@@ -1,5 +1,6 @@
 #========== Qt Libraries and include directories ==========#
 INCLUDEPATH += \
+    $$PWD/. \
     $$PWD/analyzer \
     $$PWD/cli \
     $$PWD/src \
@@ -20,18 +21,12 @@ DEPENDPATH += $${SUSCAN_BUILD_PATH}
 include($$PWD/../sigutils/sigutils.pri)
 
 win32 {
-# Add from Radioconda's packages
-LIBS += -L$${RADIOCONDA_PATH}/Library/lib -lsndfile
-LIBS += -L$${RADIOCONDA_PATH}/Library/lib -lSoapySDR
-LIBS += -L$${RADIOCONDA_PATH}/Library/lib -llibxml2
-LIBS += -L$${RADIOCONDA_PATH}/Library/lib -lfftw3
-LIBS += -L$${RADIOCONDA_PATH}/Library/lib -lzlib
-
-# Libxml2 is located in a folder
-INCLUDEPATH += $${RADIOCONDA_PATH}/Library/include/libxml2
-
-# We use custom build json-c since Radioconda doesn't have it
+include($$PWD/../libthirdparty/fftwf.pri)
+include($$PWD/../libthirdparty/libsndfile-1.2.2.pri)
+include($$PWD/../libthirdparty/soapysdr.pri)
 include($$PWD/../libthirdparty/json-c-0.18-20240915.pri)
+include($$PWD/../libthirdparty/libxml2.pri)
+include($$PWD/../libthirdparty/zlib.pri)
 
 # regex.h for C does not exists in MinGW
 DEFINES += USE_REGEX_PCRE2
